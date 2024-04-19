@@ -35,7 +35,7 @@ class SurveyStoreRequest extends FormRequest
             'image' => 'nullable|string',
             'user_id' => 'exists:users,id',
             'status' => 'required|boolean',
-            'descripion' => 'nullable|string',
+            'description' => 'nullable|string',
             'expire_date' => 'nullable|date|after:today',
             'questions' => 'array',
         ];
