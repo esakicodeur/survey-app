@@ -2,8 +2,12 @@ import { useState } from 'react'
 import PageComponent from '../components/PageComponent'
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import TButton from '../components/core/TButton';
+import axiosClient from '../axios.js'
+import { useNavigate } from 'react-router-dom';
 
 export default function SurveyView() {
+  const navigate = useNavigate();
+
   const [survey, setSurvey] = useState({
     title: "",
     slug: "",
@@ -14,21 +18,53 @@ export default function SurveyView() {
     expire_date: "",
     questions: [],
   });
+  const [error, setError] = useState('');
 
-  const onImageChoose = () => {
-    console.log("On image choose")
+  const onImageChoose = (ev) => {
+    const file = ev.target.files[0];
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSurvey({
+        ...survey,
+        image: file,
+        image_url: reader.result
+      })
+
+      ev.target.value = ""
+    }
+    reader.readAsDataURL(file);
   }
 
   const onSubmit = (ev) => {
     ev.preventDefault();
-    console.log(ev);
+
+    const payload = { ...survey };
+    if (payload.image) {
+      payload.image = payload.image_url;
+    }
+    delete payload.image_url;
+    axiosClient.post("/survey", payload).then((res) => {
+      console.log(res);
+      navigate('/surveys');
+    })
+    .catch((err) => {
+      if (err && err.response) {
+        setError(err.response.data.message);
+      }
+      console.log(err, err.response);
+    });
   }
 
   return (
     <PageComponent title="Create new Survey">
-      <form action="#" method='POST' onSubmit={onSubmit}>
+      <form onSubmit={onSubmit}>
         <div className='shadow sm:overflow-hidden sm:rounded-md'>
           <div className='space-y-6 bg-white px-4 py-4 sm:p-6'>
+            {error && (<div className='bg-red-500 text-white py-2 px-3'>
+                {error}
+            </div>)}
+
             {/* Image */}
               <div>
                 <label className='block text-sm font-medium text-gray-700'>
