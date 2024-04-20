@@ -4,6 +4,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from '../axios';
+import Toast from './Toast';
 
 const navigation = [
   { name: 'Dashboard', to: '/' },
@@ -164,6 +165,8 @@ export default function DefaultLayout() {
         </Disclosure>
 
         <Outlet />
+
+        <Toast />
       </div>
     </>
   )

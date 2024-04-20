@@ -6,8 +6,10 @@ import axiosClient from '../axios.js'
 import { useNavigate, useParams } from 'react-router-dom';
 import SurveyQuestions from '../components/SurveyQuestions.jsx';
 import { v4 as uuidv4 } from "uuid";
+import { useStateContext } from '../contexts/ContextProvider.jsx';
 
 export default function SurveyView() {
+  const { showToast } = useStateContext();
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -59,6 +61,11 @@ export default function SurveyView() {
       .then((res) => {
         console.log(res);
         navigate('/surveys');
+        if (id) {
+          showToast('The survey was updated.');
+        } else {
+          showToast('The survey was created.');
+        }
       })
       .catch((err) => {
         if (err && err.response) {
@@ -200,6 +207,7 @@ export default function SurveyView() {
                     type="date"
                     name='expire_date'
                     id='expire_date'
+                    value={survey.expire_date}
                     onChange={(ev) =>
                       setSurvey({ ...survey, expire_date: ev.target.value })
                     }
