@@ -33,7 +33,7 @@ class SurveyUpdateRequest extends FormRequest
             'image' => 'string',
             'user_id' => 'exists:users,id',
             'status' => 'required|boolean',
-            'descripion' => 'nullable|string',
+            'description' => 'nullable|string',
             'expire_date' => 'nullable|date|after:tomorrow',
             'questions' => 'array'
         ];
