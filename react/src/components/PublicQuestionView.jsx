@@ -3,9 +3,9 @@ export default function PublicQuestionView({ question, index, answerChanged }) {
 
   function onCheckboxChanged(option, $event) {
     if ($event.target.checked) {
-      selectedOptions.push(option.uuid)
+      selectedOptions.push(option.text)
     } else {
-      selectedOptions = selectedOptions.filter(op => op != option.uuid)
+      selectedOptions = selectedOptions.filter(op => op != option.text)
     }
 
     answerChanged(selectedOptions);

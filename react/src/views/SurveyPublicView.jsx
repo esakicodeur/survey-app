@@ -5,6 +5,7 @@ import PublicQuestionView from "../components/PublicQuestionView";
 
 export default function SurveyPublicView() {
   const answers = {};
+  const [surveyFinished, setSurveyFinished] = useState(false);
   const [survey, setSurvey] = useState({
     questions: []
   });
@@ -30,6 +31,13 @@ export default function SurveyPublicView() {
     ev.preventDefault();
 
     console.log(answers);
+    axiosClient
+      .post(`/survey/${survey.id}/answer`, {
+        answers
+      })
+      .then((response) => {
+        setSurveyFinished(true);
+      })
   }
 
   return (
@@ -48,24 +56,35 @@ export default function SurveyPublicView() {
             </div>
           </div>
 
-          <div>
-            {survey.questions.map((question, index) => (
-              <PublicQuestionView
-                key={question.id}
-                question={question}
-                index={index}
-                answerChanged={val => answerChanged(question, val)}
-              />
-            ))}
-          </div>
+          {surveyFinished && (
+            <div className="py-8 px-6 bg-emerald-500 text-white w-[600px] mx-auto">
+              Thank you for participating in the survey
+            </div>
+          )}
 
-          <button
-            type="submit"
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Submit
-          </button>
-        </form>
+          {!surveyFinished && (
+            <>
+              <div>
+                {survey.questions.map((question, index) => (
+                  <PublicQuestionView
+                    key={question.id}
+                    question={question}
+                    index={index}
+                    answerChanged={val => answerChanged(question, val)}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="submit"
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Submit
+              </button>
+
+            </>
+            )}
+          </form>
       )}
     </div>
   )
