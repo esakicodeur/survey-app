@@ -2,9 +2,17 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import axiosClient from "../axios";
 import PublicQuestionView from "../components/PublicQuestionView";
+import admin from '../adminResults';
 
 export default function SurveyPublicView() {
-  const answers = {};
+  const results = [];
+  const finalResults = [];
+
+  const [adminResults, setAdminResults] = useState(admin);
+  const [data, setData] = useState([]);
+
+  const studentResults = {};
+
   const [surveyFinished, setSurveyFinished] = useState(false);
   const [survey, setSurvey] = useState({
     questions: []
@@ -23,21 +31,35 @@ export default function SurveyPublicView() {
   }, []);
 
   function answerChanged(question, value) {
-    answers[question.id] = value;
-    console.log(question, value);
+    studentResults[question.question] = value;
   }
 
   function onSubmit(ev) {
     ev.preventDefault();
 
-    console.log(answers);
-    axiosClient
-      .post(`/survey/${survey.id}/answer`, {
-        answers
-      })
-      .then((response) => {
-        setSurveyFinished(true);
-      })
+    adminResults.forEach((element) => {
+      if (Object.keys(element)[0] == survey.slug) {
+        for (const cle in element[survey.slug]) {
+          if (cle in studentResults) {
+            for (const key in studentResults) {
+              if (key === cle) {
+                if (studentResults[key] === element[survey.slug][cle]) {
+                  finalResults[key] = `[ ${key} ] ---> ( ${studentResults[key]} ) ---> vrai`;
+                } else {
+                  finalResults[key] = `[ ${key} ] ---> ( ${studentResults[key]} ) ---> faux`;
+                }
+              }
+            }
+          } else {
+            finalResults[cle] = `[ ${cle} ] ---> Pas de reponse !`;
+          }
+        }
+      }
+    });
+
+    setData(finalResults);
+
+    setSurveyFinished(true);
   }
 
   return (
@@ -45,20 +67,31 @@ export default function SurveyPublicView() {
       {loading && (<div className="flex justify-center">Loading...</div>)}
       {!loading && (
         <form onSubmit={ev => onSubmit(ev)} className="container mx-auto p-4">
-          <div className="">
-            <div className="">
+          <div className="items-center">
+            <div className="w-[600px] mx-auto">
               <h1 className="text-3xl mb-3">{survey.title}</h1>
+              <h1 className="text-3xl mb-3">{survey.slug}</h1>
               <p className="text-gray-500 text-sm mb-3">Expire Date : {survey.expire_date}</p>
               <p className="text-gray-500 text-sm mb-3">{survey.description}</p>
             </div>
-            <div className="mr-4">
+            <div className="w-[600px] mx-auto">
               <img src={ survey.image_url } alt="" />
             </div>
           </div>
 
           {surveyFinished && (
-            <div className="py-8 px-6 bg-emerald-500 text-white w-[600px] mx-auto">
-              Thank you for participating in the survey
+            <div className="w-[600px] mx-auto py-8 px-6 bg-gray-100 text-white">
+              {/* Thank you for participating in the survey */}
+              <div className="grid grid-cols-12">
+                {data.map((item, index) => {
+                    return (
+                      <div key={index} className="my-3 col-span-12 bg-gray-700 p-2 ml-5 rounded-md">
+                        {item}
+                      </div>
+                    )
+                  }
+                )}
+              </div>
             </div>
           )}
 
@@ -75,12 +108,14 @@ export default function SurveyPublicView() {
                 ))}
               </div>
 
-              <button
-                type="submit"
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Submit
-              </button>
+              <div className="w-[600px] mx-auto justify-center">
+                <button
+                  type="submit"
+                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Submit
+                </button>
+              </div>
 
             </>
             )}

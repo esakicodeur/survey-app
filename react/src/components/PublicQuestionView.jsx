@@ -13,10 +13,10 @@ export default function PublicQuestionView({ question, index, answerChanged }) {
 
   return (
     <>
-      <fieldset className="mb-4">
+      <fieldset className="mb-4 w-[600px] mx-auto">
         <div>
-          <legend className="text-base font-medium text-gray-900">
-            {index + 1}. {question.question}
+          <legend className="font-medium text-gray-50 ">
+            <span className="bg-gray-600 p-2 rounded-full">{question.question}</span>
           </legend>
           <p className="text-gray-500 text-sm">{question.description}</p>
         </div>
@@ -41,7 +41,7 @@ export default function PublicQuestionView({ question, index, answerChanged }) {
           {question.type === "radio" && (
             <div>
               {question.data.options.map((option, ind) => (
-                <div key={option.uuid} className="flex items-center">
+                <div key={option.uuid} className="flex items-center ml-12">
                   <input
                     id={option.uuid}
                     name={"question" + question.id}
@@ -52,7 +52,7 @@ export default function PublicQuestionView({ question, index, answerChanged }) {
                   />
                   <label
                     htmlFor={option.uuid}
-                    className="ml-3 block text-sm font-medium text-gray-700"
+                    className="ml-3 block font-medium text-gray-700 text-2xl"
                   >
                     {option.text}
                   </label>

@@ -6,6 +6,7 @@ use App\Enums\QuestionTypeEnum;
 use App\Http\Requests\StoreSurveyAnswerRequest;
 use App\Http\Requests\SurveyStoreRequest;
 use App\Http\Requests\SurveyUpdateRequest;
+use App\Http\Resources\SurveyQuestionAnswerResource;
 use App\Http\Resources\SurveyResource;
 use App\Models\Survey;
 use App\Models\SurveyAnswer;
