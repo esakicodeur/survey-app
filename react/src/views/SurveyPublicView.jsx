@@ -7,9 +7,11 @@ import admin from '../adminResults';
 export default function SurveyPublicView() {
   const results = [];
   const finalResults = [];
+  const studentInfos = [];
 
   const [adminResults, setAdminResults] = useState(admin);
   const [data, setData] = useState([]);
+  const [infoData, setInfoData] = useState([]);
 
   const studentResults = {};
 
@@ -57,7 +59,11 @@ export default function SurveyPublicView() {
       }
     });
 
+    studentInfos.push(studentResults['Nom(s)'], studentResults['Prenom(s)'], studentResults['Classe'])
+
     setData(finalResults);
+
+    setInfoData(studentInfos);
 
     setSurveyFinished(true);
   }
@@ -70,7 +76,6 @@ export default function SurveyPublicView() {
           <div className="items-center">
             <div className="w-[600px] mx-auto">
               <h1 className="text-3xl mb-3">{survey.title}</h1>
-              <h1 className="text-3xl mb-3">{survey.slug}</h1>
               <p className="text-gray-500 text-sm mb-3">Expire Date : {survey.expire_date}</p>
               <p className="text-gray-500 text-sm mb-3">{survey.description}</p>
             </div>
@@ -83,6 +88,14 @@ export default function SurveyPublicView() {
             <div className="w-[600px] mx-auto py-8 px-6 bg-gray-100 text-white">
               {/* Thank you for participating in the survey */}
               <div className="grid grid-cols-12">
+                {infoData.map((item, index) => {
+                    return (
+                      <div key={index} className="my-3 col-span-12 bg-gray-700 p-2 ml-5 rounded-md">
+                        {item}
+                      </div>
+                    )
+                  }
+                )}
                 {data.map((item, index) => {
                     return (
                       <div key={index} className="my-3 col-span-12 bg-gray-700 p-2 ml-5 rounded-md">
